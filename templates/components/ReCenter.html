@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Re-center Ball</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #2c2c2c;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 500px;
+      margin: 20px auto;
+      background: #1a202c;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .game-area {
+      width: 500px;
+      height: 300px;
+      background: #2d3748;
+      position: relative;
+      margin: 20px auto;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .ball {
+      width: 20px;
+      height: 20px;
+      background-color: #4caf50;
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+      transition: left 0.5s ease, top 0.5s ease; /* Suaviza el movimiento de la bola */
+    }
+    .start-btn, .retry-btn {
+      background-color: #3182ce;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .start-btn:hover, .retry-btn:hover {
+      background-color: #63b3ed;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Re-center Ball</h1>
+    <div id="content"></div>
+  </div>
+
+  <script>
+    let clicks = 0;
+    let time = 15;
+    let timer;
+    let center = true;
+    const gameAreaSize = { width: 500, height: 300 };
+
+    function startGame() {
+      clicks = 0;
+      time = 15;
+      center = true;
+
+      updateGameArea();
+      startTimer();
+    }
+
+    function handleClick() {
+      clicks++;
+      center = !center;
+
+      // Generate random position within the game area
+      const newX = Math.random() * (gameAreaSize.width - 20);
+      const newY = Math.random() * (gameAreaSize.height - 20);
+
+      updateGameArea(newX, newY);
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        time--;
+        if (time < 0) {
+          clearInterval(timer);
+          endGame();
+        } else {
+          updateInfo();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      document.getElementById('content').innerHTML = `
+        <h2>Game Over!</h2>
+        <p>Your score: ${clicks}</p>
+        <button class="retry-btn" onclick="startGame()">Try Again</button>
+      `;
+      saveScore();
+    }
+
+    function saveScore() {
+      fetch('/add_score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ game: 'reCenter', score: clicks }),
+      })
+      .then(response => response.json())
+      .then(data => console.log('Score saved:', data))
+      .catch(error => console.error('Error saving score:', error));
+    }
+
+    function updateGameArea(x = 240, y = 140) {
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <div class="game-area">
+          <div class="ball" onclick="handleClick()" style="left: ${center ? '240px' : `${x}px`}; top: ${center ? '140px' : `${y}px`};"></div>
+        </div>
+        <p id="info">Time: ${time}s | Score: ${clicks}</p>
+      `;
+    }
+
+    function updateInfo() {
+      document.getElementById('info').innerText = `Time: ${time}s | Score: ${clicks}`;
+    }
+
+    // Initial rendering
+    document.getElementById('content').innerHTML = `
+      <button class="start-btn" onclick="startGame()">Start Game</button>
+    `;
+  </script>
+</body>
+</html>

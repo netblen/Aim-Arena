@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaction Time Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c2c2c;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Evita que la pantalla se mueva */
+        }
+        .container {
+            text-align: center;
+        }
+        .button, .game-box {
+            background-color: #00aaff;
+            color: white;
+            font-size: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .game-box {
+            width: 500px;
+            height: 300px;
+            position: relative;
+        }
+        .reaction-box {
+            background-color: #ffcc00;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+        .wait-text {
+            font-size: 30px;
+            color: #fff;
+            font-weight: bold;
+            margin-top: 20px; /* Añadir espacio entre el título y el texto de espera */
+            display: none;
+            animation: fadeIn 1s ease-in-out infinite alternate; /* Efecto de animación */
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Reaction Time Test</h1>
+        <div id="wait-text" class="wait-text">Wait...</div>
+        <div id="start-button" class="button">Start</div>
+        <div id="game-container" class="game-box" style="display: none;">
+            <div id="reaction-box" class="reaction-box"></div>
+        </div>
+        <div id="reaction-time" class="reaction-time" style="display: none;">Reaction Time: 0 ms</div>
+        <button id="retry-button" class="button" style="display: none;">Try again!</button>
+    </div>
+
+    <script>
+        let startButton = document.getElementById("start-button");
+        let gameContainer = document.getElementById("game-container");
+        let reactionBox = document.getElementById("reaction-box");
+        let reactionTimeDisplay = document.getElementById("reaction-time");
+        let retryButton = document.getElementById("retry-button");
+        let waitText = document.getElementById("wait-text");
+        
+        let reactionTime = 0;
+        let startTime = 0;
+        let gameActive = false;
+        let timer;
+        let waitTime = 0;
+
+        const getRandomNumber = (x) => Math.floor(Math.random() * (x - 3) + 3);
+
+        const startGame = () => {
+            // Reset game state
+            reactionTime = 0;
+            waitTime = getRandomNumber(8); // Random wait time before the reaction
+            gameActive = true;
+            gameContainer.style.display = "block";
+            reactionBox.style.display = "none";
+            reactionTimeDisplay.style.display = "none";
+            waitText.style.display = "block"; // Mostrar el texto de espera
+            startButton.style.display = "none";
+            retryButton.style.display = "none";
+            reactionTimeDisplay.textContent = `Reaction Time: ${reactionTime} ms`;
+
+            // After a random wait time, start showing the clickable reaction box
+            setTimeout(startReaction, waitTime * 1000);
+        };
+
+        const startReaction = () => {
+            waitText.style.display = "none"; // Ocultar el texto de espera
+            reactionBox.style.display = "block";
+            startTime = Date.now();  // Record the time when reaction box appears
+            timer = setInterval(updateReactionTime, 10); // Update reaction time while active
+        };
+
+        const updateReactionTime = () => {
+            if (gameActive) {
+                reactionTime = Date.now() - startTime;
+                reactionTimeDisplay.textContent = `Reaction Time: ${reactionTime} ms`;
+            }
+        };
+
+        const stopReaction = () => {
+            if (gameActive) {
+                clearInterval(timer); // Stop the timer
+                gameActive = false;
+                sendScoreToServer(reactionTime); // Send score to Flask backend
+                reactionTimeDisplay.style.display = "block";
+                retryButton.style.display = "block";
+            }
+        };
+
+        const sendScoreToServer = (score) => {
+            fetch('/add_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    game: 'reactionTimeTest',
+                    score: score
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Score added:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        };
+
+        startButton.addEventListener("click", startGame);
+        reactionBox.addEventListener("click", stopReaction);
+        retryButton.addEventListener("click", startGame);
+    </script>
+</body>
+</html>

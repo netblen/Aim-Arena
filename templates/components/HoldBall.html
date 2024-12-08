@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hold Ball Game</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        .game-container {
+            text-align: center;
+            width: 500px;
+            height: 300px;
+            background-color: #2d3748;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .ball {
+            width: 40px;
+            height: 40px;
+            background-color: #f56565;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            transition: left 0.5s ease, top 0.5s ease; /* Movimiento suave en ambas direcciones */
+        }
+
+        .start-button, .try-again-button {
+            background-color: #48bb78;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .start-button:hover, .try-again-button:hover {
+            background-color: #38a169;
+        }
+
+        .score-display {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .timer-display {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="text-4xl pt-4 font-bold text-primary">Hold Ball</h1>
+    
+    <div id="game-container" class="game-container">
+        <!-- El balón se agregará dinámicamente con JS -->
+    </div>
+
+    <div id="score-container">
+        <div id="score" class="score-display">Score: 0</div>
+        <div id="timer" class="timer-display">Time: 10</div> <!-- Temporizador de 10 segundos -->
+        <button id="start-button" class="start-button">Start</button>
+        <button id="try-again-button" class="try-again-button" style="display: none;">Try Again!</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let holdScore = 0;
+        let intervalId = null;
+        let position = { x: 230, y: 130 };
+        let gameStarted = false;
+        let time = 10; // Temporizador de 10 segundos
+        let ballElement = null;
+
+        const startButton = document.getElementById('start-button');
+        const tryAgainButton = document.getElementById('try-again-button');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const gameContainer = document.getElementById('game-container');
+
+        // Función para actualizar la posición de la bola
+        const movePosition = () => {
+            const newX = Math.ceil(Math.random() * (gameContainer.clientWidth - 40)); // 40 es el tamaño de la bola
+            const newY = Math.ceil(Math.random() * (gameContainer.clientHeight - 40));
+            position = { x: newX, y: newY };
+            ballElement.style.left = `${position.x}px`;
+            ballElement.style.top = `${position.y}px`;
+        };
+
+        // Inicia el juego
+        const startGame = () => {
+            score = 0;
+            holdScore = 0;
+            time = 10; // 10 segundos de juego
+            scoreElement.innerHTML = `Score: ${score}`;
+            timerElement.innerHTML = `Time: ${time}`;
+            gameStarted = true;
+            movePosition();
+            intervalId = setInterval(movePosition, Math.random() * 500 + 300); // Mueve la bola cada 300-800 ms (más rápido)
+
+            // Inicia el temporizador de 10 segundos
+            const timerInterval = setInterval(() => {
+                if (time <= 0) {
+                    clearInterval(timerInterval);
+                    clearInterval(intervalId);
+                    gameStarted = false;
+                    tryAgainButton.style.display = 'block'; // Muestra el botón de "Try Again"
+                    sendScoreToFlask();
+                } else {
+                    time--;
+                    timerElement.innerHTML = `Time: ${time}`;
+                }
+            }, 1000);
+        };
+
+        // Cuando la bola es tocada
+        const onBallHover = () => {
+            if (gameStarted) {
+                holdScore++;
+                scoreElement.innerHTML = `Score: ${holdScore}`;
+            }
+        };
+
+        // Enviar la puntuación al servidor Flask
+        const sendScoreToFlask = () => {
+            fetch('/add_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    game: 'holdBall',
+                    score: holdScore
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Scores updated:', data.scores);
+            })
+            .catch(error => {
+                console.error('Error al enviar puntuación:', error);
+            });
+        };
+
+        // Crear la bola y agregarla al DOM
+        ballElement = document.createElement('div');
+        ballElement.className = 'ball';
+        gameContainer.appendChild(ballElement);
+
+        ballElement.addEventListener('mouseover', onBallHover);
+
+        // Lógica del botón de inicio
+        startButton.addEventListener('click', () => {
+            startGame();
+            startButton.style.display = 'none'; // Oculta el botón de inicio
+        });
+
+        // Lógica del botón de intentar de nuevo
+        tryAgainButton.addEventListener('click', () => {
+            startGame();
+            tryAgainButton.style.display = 'none';
+            startButton.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Fun Games Application</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    header {
+      background-color: #ff69b4;
+      color: white;
+      padding: 20px 0;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 36px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      margin: 10px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none; /* Ensure no underline */
+      font-size: 20px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #ff6347;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      background-color: #ff4500;
+      transform: scale(1.1);
+    }
+
+    footer {
+      background-color: #ff69b4;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .game-link {
+      display: inline-block;
+      padding: 20px;
+      margin: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 10px;
+      font-size: 20px;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      text-decoration: none; /* Remove underline */
+    }
+
+    .game-link:hover {
+      transform: scale(1.1);
+      background-color: #45a049;
+    }
+
+    /* Flex container for aligning buttons vertically */
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 90%;
+      margin-top: 40px;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #ff6347;
+    }
+
+    .game-container p {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .game-container a {
+      display: block;
+      margin: 10px;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to the Fun Games</h1>
+  </header>
+
+  <section class="game-container">
+    <h2>Explore our games and challenges!</h2>
+    <p>Click any game to start having fun.</p>
+    <a href="{{ url_for('clicks_per_second') }}" class="game-link">Clicks per Second</a>
+    <a href="{{ url_for('shoot_test') }}" class="game-link">Shoot Test</a>
+    <a href="{{ url_for('recenter') }}" class="game-link">Recenter</a>
+    <a href="{{ url_for('hold_ball') }}" class="game-link">Hold Ball</a>
+    <a href="{{ url_for('horizontal_hold') }}" class="game-link">Horizontal Hold</a>
+    <a href="{{ url_for('vertical_hold') }}" class="game-link">Vertical Hold</a>
+    <a href="{{ url_for('reaction_time_test') }}" class="game-link">Reaction Time Test</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Fun Games Application</p>
+  </footer>
+
+  <script>
+    // Animation for game links
+    const gameLinks = document.querySelectorAll('.game-link');
+    
+    gameLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        link.style.animation = 'bounce 0.3s ease'; // Apply bounce animation
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoot Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    .game-container {
+      margin: 20px auto;
+      width: 500px;
+      height: 300px;
+      background-color: #333;
+      border-radius: 10px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .target {
+      width: 20px;
+      height: 20px;
+      background-color: red;
+      border-radius: 50%;
+      position: absolute;
+      cursor: pointer;
+      transition: left 0.5s ease, top 0.5s ease; /* Movimiento suave */
+    }
+    .button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shoot Test</h1>
+  <div id="game-container" class="game-container"></div>
+  <div id="info"></div>
+  <button id="start-button" class="button">Start</button>
+
+  <script>
+    let time = -1;
+    let clicks = 0;
+    let timerInterval;
+    let position = { x: 230, y: 130 };
+
+    const gameContainer = document.getElementById("game-container");
+    const startButton = document.getElementById("start-button");
+    const info = document.getElementById("info");
+
+    function updateTargetPosition() {
+      const newX = Math.random() * (gameContainer.clientWidth - 20);
+      const newY = Math.random() * (gameContainer.clientHeight - 20);
+      position = { x: newX, y: newY };
+
+      const target = document.querySelector(".target");
+      if (target) {
+        target.style.left = `${position.x}px`;
+        target.style.top = `${position.y}px`;
+      }
+    }
+
+    function startGame() {
+      clicks = 0;
+      time = 10;
+      startButton.style.display = "none";
+      info.innerHTML = "";
+
+      // Create target
+      const target = document.createElement("div");
+      target.classList.add("target");
+      target.style.left = `${position.x}px`;
+      target.style.top = `${position.y}px`;
+      target.onclick = () => {
+        clicks++;
+        updateTargetPosition();
+      };
+
+      gameContainer.innerHTML = "";
+      gameContainer.appendChild(target);
+
+      timerInterval = setInterval(() => {
+        time--;
+        if (time === 0) {
+          endGame();
+        } else if (time > 0) {
+          info.innerHTML = `Time remaining: ${time}s`;
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      gameContainer.innerHTML = "";
+      startButton.style.display = "block";
+      info.innerHTML = `Shoots: ${clicks}`;
+
+      // Save score via Flask
+      fetch("/add_score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ game: "shootTest", score: clicks }),
+      }).then((response) => response.json())
+        .then((data) => console.log("Score saved:", data))
+        .catch((error) => console.error("Error saving score:", error));
+    }
+
+    startButton.onclick = startGame;
+  </script>
+</body>
+</html>

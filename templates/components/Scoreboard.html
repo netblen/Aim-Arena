@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scoreboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    .container {
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    .scoreboard {
+      width: 50%;
+      margin: 0 auto;
+      margin-top: 40px;
+    }
+    .chart-container {
+      width: 100%;
+      height: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-4xl pt-4 font-bold text-primary">Ranking Chart</h1>
+
+    <div class="scoreboard">
+      <div class="chart-container" id="chartContainer">
+        <canvas id="scoreChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simulación de datos
+    const rankings = {
+      reactionTimeTest: [150, 200, 250, 300, 350],
+      clicksPerSecond: [1.5, 2.0, 2.5, 3.0, 3.5],
+      shootTest: [5, 10, 15, 20, 25]
+    };
+
+    // Cambiar "reactionTimeTest" a la propiedad deseada
+    const actual = 'reactionTimeTest';
+
+    const filteredRankings = rankings[actual].map((score, index) => ({
+      name: `#${index + 1}`,
+      score
+    }));
+
+    // Crear gráfico con Chart.js
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    const scoreChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: filteredRankings.map((ranking) => ranking.name),
+        datasets: [{
+          label: 'Puntuación',
+          data: filteredRankings.map((ranking) => ranking.score),
+          borderColor: '#fe6091',
+          borderWidth: 2,
+          pointBackgroundColor: '#fe6091',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              title: function(tooltipItem) {
+                return 'Ranking ' + tooltipItem[0].label;
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
