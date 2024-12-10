@@ -39,14 +39,12 @@
   </div>
 
   <script>
-    // Simulación de datos
     const rankings = {
       reactionTimeTest: [150, 200, 250, 300, 350],
       clicksPerSecond: [1.5, 2.0, 2.5, 3.0, 3.5],
       shootTest: [5, 10, 15, 20, 25]
     };
 
-    // Cambiar "reactionTimeTest" a la propiedad deseada
     const actual = 'reactionTimeTest';
 
     const filteredRankings = rankings[actual].map((score, index) => ({
@@ -54,7 +52,6 @@
       score
     }));
 
-    // Crear gráfico con Chart.js
     const ctx = document.getElementById('scoreChart').getContext('2d');
     const scoreChart = new Chart(ctx, {
       type: 'line',

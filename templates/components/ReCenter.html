@@ -41,7 +41,7 @@
       border-radius: 50%;
       position: absolute;
       cursor: pointer;
-      transition: left 0.5s ease, top 0.5s ease; /* Suaviza el movimiento de la bola */
+      transition: left 0.5s ease, top 0.5s ease;
     }
     .start-btn, .retry-btn {
       background-color: #3182ce;
@@ -84,7 +84,6 @@
       clicks++;
       center = !center;
 
-      // Generate random position within the game area
       const newX = Math.random() * (gameAreaSize.width - 20);
       const newY = Math.random() * (gameAreaSize.height - 20);
 
@@ -137,7 +136,6 @@
       document.getElementById('info').innerText = `Time: ${time}s | Score: ${clicks}`;
     }
 
-    // Initial rendering
     document.getElementById('content').innerHTML = `
       <button class="start-btn" onclick="startGame()">Start Game</button>
     `;

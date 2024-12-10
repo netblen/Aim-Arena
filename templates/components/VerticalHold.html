@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertical Hold Game</title>
     <style>
-        /* Estilos básicos */
         body {
             font-family: Arial, sans-serif;
             background-color: #1a202c;
@@ -38,7 +37,7 @@
             border-radius: 50%;
             position: absolute;
             cursor: pointer;
-            transition: top 0.5s ease; /* Transición para movimiento suave en el eje vertical */
+            transition: top 0.5s ease; 
         }
 
         .start-button, .try-again-button {
@@ -69,12 +68,12 @@
     <h1 class="text-4xl pt-4 font-bold text-primary">Vertical Hold Game</h1>
     
     <div id="game-container" class="game-container">
-        <!-- El balón se agregará dinámicamente con JS -->
+
     </div>
 
     <div id="score-container">
         <div id="score" class="score-display">Score: 0</div>
-        <div id="timer" class="timer-display">Time: 10</div> <!-- Temporizador de 10 segundos -->
+        <div id="timer" class="timer-display">Time: 10</div> 
         <button id="start-button" class="start-button">Start</button>
         <button id="try-again-button" class="try-again-button" style="display: none;">Try Again!</button>
     </div>
@@ -83,9 +82,9 @@
         let score = 0;
         let holdScore = 0;
         let intervalId = null;
-        let position = { y: 130 }; // Posición vertical (y)
+        let position = { y: 130 }; 
         let gameStarted = false;
-        let time = 10; // Temporizador de 10 segundos
+        let time = 10; 
         let ballElement = null;
 
         const startButton = document.getElementById('start-button');
@@ -94,31 +93,28 @@
         const timerElement = document.getElementById('timer');
         const gameContainer = document.getElementById('game-container');
 
-        // Función para actualizar la posición de la bola de forma vertical
         const movePosition = () => {
-            const newY = Math.ceil(Math.random() * (gameContainer.clientHeight - 40)); // 40 es el tamaño de la bola
-            position.y = newY; // Solo actualizamos la posición vertical
-            ballElement.style.top = `${position.y}px`; // Cambiamos la propiedad "top" con transición
+            const newY = Math.ceil(Math.random() * (gameContainer.clientHeight - 40)); 
+            position.y = newY; 
+            ballElement.style.top = `${position.y}px`; 
         };
 
-        // Inicia el juego
         const startGame = () => {
             score = 0;
             holdScore = 0;
-            time = 10; // 10 segundos de juego
+            time = 10; 
             scoreElement.innerHTML = `Score: ${score}`;
             timerElement.innerHTML = `Time: ${time}`;
             gameStarted = true;
             movePosition();
-            intervalId = setInterval(movePosition, Math.random() * 500 + 300); // Mueve la bola cada 300-800 ms (más rápido)
+            intervalId = setInterval(movePosition, Math.random() * 500 + 300);
 
-            // Inicia el temporizador de 10 segundos
             const timerInterval = setInterval(() => {
                 if (time <= 0) {
                     clearInterval(timerInterval);
                     clearInterval(intervalId);
                     gameStarted = false;
-                    tryAgainButton.style.display = 'block'; // Muestra el botón de "Try Again"
+                    tryAgainButton.style.display = 'block';
                     sendScoreToFlask();
                 } else {
                     time--;
@@ -127,7 +123,6 @@
             }, 1000);
         };
 
-        // Cuando la bola es tocada
         const onBallHover = () => {
             if (gameStarted) {
                 holdScore++;
@@ -135,7 +130,6 @@
             }
         };
 
-        // Enviar la puntuación al servidor Flask
         const sendScoreToFlask = () => {
             fetch('/add_score', {
                 method: 'POST',
@@ -156,20 +150,17 @@
             });
         };
 
-        // Crear la bola y agregarla al DOM
         ballElement = document.createElement('div');
         ballElement.className = 'ball';
         gameContainer.appendChild(ballElement);
 
         ballElement.addEventListener('mouseover', onBallHover);
 
-        // Lógica del botón de inicio
         startButton.addEventListener('click', () => {
             startGame();
-            startButton.style.display = 'none'; // Oculta el botón de inicio
+            startButton.style.display = 'none';
         });
 
-        // Lógica del botón de intentar de nuevo
         tryAgainButton.addEventListener('click', () => {
             startGame();
             tryAgainButton.style.display = 'none';

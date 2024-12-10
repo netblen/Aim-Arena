@@ -1,10 +1,11 @@
 # Shooter Practice Game
 ## Project Description
-[Provide a brief overview of your project, 2-3 sentences]
+[Shooter Practice Game is a rather interesting and fast-paced interaction that builds up the response times and accuracies of participants. This includes multiple levels of difficulty, adjustable targets, and real-time feedback on performance.]
 ## Main Idea
-[Describe the core concept or functionality of your project]
+[This concept would be able to create a dynamic and challenging practice environment for all participants to work at shooting precision and speed. Some of the features of this game include moving targets, variable speeds, and scoring.]
 ## Technologies
-[List any technologies or libraries you think you might use]
+[Backend: Flask (Python)
+Frontend: HTML, CSS, JavaScript]
 ## Project Timeline
 - Week 4: Project initialization and setup
 - Week 5: First meaningful commit beyond initial setup

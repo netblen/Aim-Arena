@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Fun Games Application</title>
   <style>
-    /* General Styles */
     body {
       font-family: Arial, sans-serif;
       background-color: #f0f8ff;
@@ -46,7 +45,7 @@
 
     nav ul li a {
       color: white;
-      text-decoration: none; /* Ensure no underline */
+      text-decoration: none; 
       font-size: 20px;
       padding: 10px 20px;
       border-radius: 5px;
@@ -76,7 +75,7 @@
       border-radius: 10px;
       font-size: 20px;
       transition: transform 0.3s ease, background-color 0.3s ease;
-      text-decoration: none; /* Remove underline */
+      text-decoration: none;
     }
 
     .game-link:hover {
@@ -84,7 +83,6 @@
       background-color: #45a049;
     }
 
-    /* Flex container for aligning buttons vertically */
     .game-container {
       display: flex;
       flex-direction: column;
@@ -133,12 +131,11 @@
   </footer>
 
   <script>
-    // Animation for game links
     const gameLinks = document.querySelectorAll('.game-link');
     
     gameLinks.forEach(link => {
       link.addEventListener('click', function() {
-        link.style.animation = 'bounce 0.3s ease'; // Apply bounce animation
+        link.style.animation = 'bounce 0.3s ease'; 
       });
     });
   </script>

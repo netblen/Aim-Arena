@@ -60,46 +60,42 @@
         let timer;
         let gameActive = false;
 
-        // Function to start the game
         function startGame() {
-            clicks = 0;  // Reset clicks to 0 when the game starts
-            time = 10;   // Set the timer to 10 seconds
-            document.getElementById("game-box").textContent = time; // Show the timer
-            document.getElementById("retry-button").style.display = "none"; // Hide retry button initially
+            clicks = 0;
+            time = 10;
+            document.getElementById("game-box").textContent = time;
+            document.getElementById("retry-button").style.display = "none";
 
-            // Start the countdown timer
             timer = setInterval(() => {
                 time--;
                 if (time === 0) {
-                    clearInterval(timer);  // Stop the timer
-                    const score = clicks / 10; // Calculate score (clicks per second)
-                    document.getElementById("game-box").textContent = `Clicks per second: ${score.toFixed(2)}`; // Show score
-                    document.getElementById("retry-button").style.display = "block"; // Show retry button
+                    clearInterval(timer);
+                    const score = clicks / 10;
+                    document.getElementById("game-box").textContent = `Clicks per second: ${score.toFixed(2)}`;
+                    document.getElementById("retry-button").style.display = "block";
                 } else {
-                    document.getElementById("game-box").textContent = time; // Update timer
+                    document.getElementById("game-box").textContent = time;
                 }
             }, 1000);
         }
 
-        // Function to handle clicks during the game
         function handleClick() {
-            if (time > 0) {  // Only count clicks if the timer is running
-                clicks++;  // Increase the click counter
+            if (time > 0) {
+                clicks++;
             }
         }
 
-        // Event listener for the start button
         function initializeGame() {
             document.getElementById("game-box").addEventListener("click", handleClick);
-            document.getElementById("start-button").style.display = "none"; // Hide the start button after it is clicked
-            startGame();  // Start the game when the user clicks the start button
+            document.getElementById("start-button").style.display = "none";
+            startGame();
         }
     </script>
 </head>
 <body>
     <div class="container">
         <h1 class="title">Click per second</h1>
-        <div id="game-box" class="box">     </div>
+        <div id="game-box" class="box"></div>
         <button id="start-button" class="button" onclick="initializeGame()">Start</button>
         <button id="retry-button" class="button" onclick="startGame()" style="display: none;">Try again!</button>
     </div>
