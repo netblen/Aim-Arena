@@ -25,7 +25,17 @@ scores = {
     "test": []
 }
 
-BLOCKED_IPS = {'127.0.0.1'}
+GAME_RECORDS = {
+    "shootTest": {"label": "Shoot Test", "unit": "shots", "best": "max"},
+    "clicksPerSecond": {"label": "Click Speed", "unit": "CPS", "best": "max"},
+    "recenter": {"label": "Re-center", "unit": "points", "best": "max"},
+    "holdBall": {"label": "Hold Ball", "unit": "points", "best": "max"},
+    "horizontalHold": {"label": "Horizontal Hold", "unit": "points", "best": "max"},
+    "verticalHold": {"label": "Vertical Hold", "unit": "points", "best": "max"},
+    "reactionTimeTest": {"label": "Reaction Time", "unit": "ms", "best": "min"},
+}
+
+BLOCKED_IPS = set()
 
 USERS = {
     'admin_user': {'password': 'adminpass', 'role': 'admin'},
@@ -61,18 +71,59 @@ def decrypt_data(encrypted_data: str) -> str:
     """Decrypt an encrypted string."""
     return fernet.decrypt(encrypted_data.encode()).decode()
 
+def parse_score(value: str):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+def format_record(game: str, value: float) -> str:
+    unit = GAME_RECORDS[game]["unit"]
+    if unit == "CPS":
+        return f"{value:.2f} CPS"
+    if unit == "ms":
+        return f"{value:.0f} ms"
+    return f"{value:.0f} {unit}"
+
+def get_best_records():
+    records = {}
+    for game, settings in GAME_RECORDS.items():
+        parsed_scores = []
+        for encrypted_score in scores.get(game, []):
+            try:
+                parsed = parse_score(decrypt_data(encrypted_score))
+            except Exception:
+                parsed = None
+            if parsed is not None:
+                parsed_scores.append(parsed)
+
+        best_score = None
+        if parsed_scores:
+            best_score = min(parsed_scores) if settings["best"] == "min" else max(parsed_scores)
+
+        records[game] = {
+            "label": settings["label"],
+            "unit": settings["unit"],
+            "direction": settings["best"],
+            "attempts": len(parsed_scores),
+            "best": best_score,
+            "display": format_record(game, best_score) if best_score is not None else None,
+        }
+    return records
+
 @app.route('/add_score', methods=['POST'])
-@check_ip 
-@check_role('admin') 
 def add_score():
-    data = request.json
+    data = request.get_json(silent=True) or {}
     game = data.get("game")
-    score = data.get("score")
-    if game and score is not None:
-        encrypted_score = encrypt_data(str(score))
-        scores[game].append(encrypted_score)
-        return jsonify({"status": "success", "scores": scores[game]})
-    return jsonify({"status": "error"}), 400
+    parsed_score = parse_score(data.get("score"))
+    if game not in GAME_RECORDS:
+        return jsonify({"status": "error", "message": "Invalid game"}), 400
+    if parsed_score is None:
+        return jsonify({"status": "error", "message": "Invalid score"}), 400
+
+    encrypted_score = encrypt_data(str(parsed_score))
+    scores[game].append(encrypted_score)
+    return jsonify({"status": "success", "scores": scores[game]})
 
 @app.route('/view_scores', methods=['GET'])
 @check_ip
@@ -81,6 +132,10 @@ def view_scores():
     decrypted_scores = {game: [decrypt_data(score) for score in score_list] 
                         for game, score_list in scores.items()}
     return jsonify({"scores": decrypted_scores})
+
+@app.route('/best_scores', methods=['GET'])
+def best_scores():
+    return jsonify({"records": get_best_records()})
 
 @app.route('/')
 def index():
@@ -100,7 +155,7 @@ def shoot_test():
 
 @app.route('/recenter')
 def recenter():
-    return render_template('components/Recenter.html')
+    return render_template('components/ReCenter.html')
 
 @app.route('/hold-ball')
 def hold_ball():
@@ -115,10 +170,12 @@ def vertical_hold():
     return render_template('components/VerticalHold.html')
 
 @app.route('/reaction-time-test')
-@check_ip
-@check_role('user')
 def reaction_time_test():
     return render_template('components/ReactionTimeTest.html')
+
+@app.route('/scoreboard')
+def scoreboard():
+    return render_template('components/Scoreboard.html')
 
 @app.route('/api/your-endpoint', methods=['GET'])
 @check_ip

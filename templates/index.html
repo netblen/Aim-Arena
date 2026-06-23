@@ -3,141 +3,162 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shooter Game - Project</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f8ff;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
-
-    header {
-      background-color: #333;
-      color: white;
-      padding: 20px 0;
-      width: 100%;
-    }
-
-    h1 {
-      font-size: 36px;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    nav ul li {
-      margin: 10px;
-    }
-
-    nav ul li a {
-      color: white;
-      text-decoration: none; 
-      font-size: 20px;
-      padding: 10px 20px;
-      border-radius: 5px;
-      background-color: #333;
-      transition: transform 0.3s ease, background-color 0.3s ease;
-    }
-
-    nav ul li a:hover {
-      background-color: #333;
-      transform: scale(1.1);
-    }
-
-    footer {
-      background-color: #333;
-      color: white;
-      padding: 10px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .game-link {
-      display: inline-block;
-      padding: 20px;
-      margin: 10px;
-      background-color: burlywood;
-      color: white;
-      border-radius: 10px;
-      font-size: 20px;
-      transition: transform 0.3s ease, background-color 0.3s ease;
-      text-decoration: none;
-    }
-
-    .game-link:hover {
-      transform: scale(1.1);
-      background-color: #debf8a;
-    }
-
-    .game-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      width: 90%;
-      margin-top: 40px;
-    }
-
-    h2 {
-      font-size: 28px;
-      color: #333;
-    }
-
-    .game-container p {
-      font-size: 18px;
-      color: #333;
-    }
-
-    .game-container a {
-      display: block;
-      margin: 10px;
-    }
-
-  </style>
+  <title>Aim Arena - Gaming Community Challenges</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 </head>
 <body>
-  <header>
-    <h1>Shooter Game</h1>
-  </header>
+  {% include 'components/_nav.html' %}
 
-  <section class="game-container">
-    <h2>Explore our games and challenges!</h2>
-    <p>Click any game to start having fun.</p>
-    <a href="{{ url_for('clicks_per_second') }}" class="game-link">Clicks per Second</a>
-    <a href="{{ url_for('shoot_test') }}" class="game-link">Shoot Test</a>
-    <a href="{{ url_for('recenter') }}" class="game-link">Recenter</a>
-    <a href="{{ url_for('hold_ball') }}" class="game-link">Hold Ball</a>
-    <a href="{{ url_for('horizontal_hold') }}" class="game-link">Horizontal Hold</a>
-    <a href="{{ url_for('vertical_hold') }}" class="game-link">Vertical Hold</a>
-    <a href="{{ url_for('reaction_time_test') }}" class="game-link">Reaction Time Test</a>
-  </section>
+  <main class="site-shell main-content">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Community skill hub</p>
+        <h1>Train, compete, and chase the next high score.</h1>
+        <p>
+          Aim Arena is a fast mini-game lobby for reaction speed, clicking accuracy,
+          mouse control, and friendly scoreboard rivalry.
+        </p>
+        <div class="hero-actions">
+          <a href="{{ url_for('shoot_test') }}" class="game-link">Start Training</a>
+          <a href="#games" class="game-link secondary-link">Browse Modes</a>
+        </div>
+      </div>
 
-  <footer>
-    <p>&copy; 2024 Project Application</p>
+      <aside class="community-panel" aria-label="Community overview">
+        <p class="eyebrow">Tonight's rotation</p>
+        <h2>Quick rounds built for warmups and party lobbies.</h2>
+        <p class="page-intro">
+          Jump into short challenges, compare scores with friends, and find the mode
+          that exposes exactly where your aim needs work.
+        </p>
+        <div class="stat-grid">
+          <div class="stat">
+            <strong>7</strong>
+            <span>mini-game modes</span>
+          </div>
+          <div class="stat">
+            <strong>10s</strong>
+            <span>average round length</span>
+          </div>
+          <div class="stat">
+            <strong>1v1</strong>
+            <span>friendly score battles</span>
+          </div>
+          <div class="stat">
+            <strong>GG</strong>
+            <span>practice mindset</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="games" aria-labelledby="games-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Choose your mode</p>
+          <h2 id="games-heading">Training playlists</h2>
+        </div>
+        <p class="page-intro">Each card opens a playable challenge with its own score tracking.</p>
+      </div>
+
+      <div class="game-grid">
+        <a href="{{ url_for('clicks_per_second') }}" class="game-card">
+          <div>
+            <small>Speed</small>
+            <h3>Click Speed</h3>
+            <p>Tap as fast as possible and measure your clicks per second.</p>
+          </div>
+          <span class="mini-record" data-game-record="clicksPerSecond">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+
+        <a href="{{ url_for('shoot_test') }}" class="game-card">
+          <div>
+            <small>Aim</small>
+            <h3>Shoot Test</h3>
+            <p>Track a moving target and stack hits before the timer ends.</p>
+          </div>
+          <span class="mini-record" data-game-record="shootTest">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+
+        <a href="{{ url_for('recenter') }}" class="game-card">
+          <div>
+            <small>Control</small>
+            <h3>Re-center</h3>
+            <p>Snap from random positions back to center with clean mouse control.</p>
+          </div>
+          <span class="mini-record" data-game-record="recenter">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+
+        <a href="{{ url_for('hold_ball') }}" class="game-card">
+          <div>
+            <small>Tracking</small>
+            <h3>Hold Ball</h3>
+            <p>Keep contact with the target as it moves across the whole arena.</p>
+          </div>
+          <span class="mini-record" data-game-record="holdBall">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+
+        <a href="{{ url_for('horizontal_hold') }}" class="game-card">
+          <div>
+            <small>Tracking</small>
+            <h3>Horizontal Hold</h3>
+            <p>Practice smooth side-to-side tracking without vertical drift.</p>
+          </div>
+          <span class="mini-record" data-game-record="horizontalHold">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+
+        <a href="{{ url_for('vertical_hold') }}" class="game-card">
+          <div>
+            <small>Tracking</small>
+            <h3>Vertical Hold</h3>
+            <p>Build vertical control and consistency under pressure.</p>
+          </div>
+          <span class="mini-record" data-game-record="verticalHold">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+
+        <a href="{{ url_for('reaction_time_test') }}" class="game-card">
+          <div>
+            <small>Reflex</small>
+            <h3>Reaction Time</h3>
+            <p>Wait for the signal, click fast, and record your response time.</p>
+          </div>
+          <span class="mini-record" data-game-record="reactionTimeTest">
+            <span>Best</span>
+            <strong data-record-value>--</strong>
+          </span>
+          <span class="card-footer">Open mode <span>></span></span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2024 Aim Arena Project</p>
   </footer>
-
-  <script>
-    const gameLinks = document.querySelectorAll('.game-link');
-    
-    gameLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        link.style.animation = 'bounce 0.3s ease'; 
-      });
-    });
-  </script>
+  <script src="{{ url_for('static', filename='js/records.js') }}"></script>
 </body>
 </html>

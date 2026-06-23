@@ -1,42 +1,26 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scoreboard</title>
+  <title>Scoreboard - Aim Arena</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f4f4f4;
-    }
-    .container {
-      margin-top: 40px;
-      margin-bottom: 40px;
-    }
-    .scoreboard {
-      width: 50%;
-      margin: 0 auto;
-      margin-top: 40px;
-    }
-    .chart-container {
-      width: 100%;
-      height: 300px;
-    }
-  </style>
 </head>
 <body>
+  {% include 'components/_nav.html' %}
 
-  <div class="container">
-    <h1 class="text-4xl pt-4 font-bold text-primary">Ranking Chart</h1>
+  <main class="game-page">
+    <section class="game-header">
+      <p class="eyebrow">Community rankings</p>
+      <h1>Scoreboard</h1>
+      <p>Track the latest scores and compare your run against the lobby.</p>
+    </section>
 
-    <div class="scoreboard">
-      <div class="chart-container" id="chartContainer">
-        <canvas id="scoreChart"></canvas>
-      </div>
-    </div>
-  </div>
+    <section class="game-stage">
+      <canvas id="scoreChart" aria-label="Ranking chart"></canvas>
+    </section>
+  </main>
 
   <script>
     const rankings = {
@@ -53,28 +37,41 @@
     }));
 
     const ctx = document.getElementById('scoreChart').getContext('2d');
-    const scoreChart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'line',
       data: {
         labels: filteredRankings.map((ranking) => ranking.name),
         datasets: [{
-          label: 'Puntuación',
+          label: 'Score',
           data: filteredRankings.map((ranking) => ranking.score),
-          borderColor: '#fe6091',
-          borderWidth: 2,
-          pointBackgroundColor: '#fe6091',
+          borderColor: '#23c7d9',
+          backgroundColor: 'rgba(35, 199, 217, 0.16)',
+          borderWidth: 3,
+          pointBackgroundColor: '#9bea56',
           pointRadius: 4,
           pointHoverRadius: 6,
+          tension: 0.35,
+          fill: true,
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
+          x: {
+            ticks: { color: '#9fb2bf' },
+            grid: { color: 'rgba(232, 245, 255, 0.08)' }
+          },
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            ticks: { color: '#9fb2bf' },
+            grid: { color: 'rgba(232, 245, 255, 0.08)' }
           }
         },
         plugins: {
+          legend: {
+            labels: { color: '#eef6fb' }
+          },
           tooltip: {
             callbacks: {
               title: function(tooltipItem) {
@@ -86,6 +83,5 @@
       }
     });
   </script>
-
 </body>
 </html>

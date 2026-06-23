@@ -1,0 +1,24 @@
+<header class="site-header">
+  <div class="site-shell nav-bar">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark">GG</span>
+      <span>Aim Arena</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav id="site-menu" class="nav-links" aria-label="Game navigation" hidden>
+      <a href="{{ url_for('clicks_per_second') }}">Click Speed</a>
+      <a href="{{ url_for('shoot_test') }}">Shoot Test</a>
+      <a href="{{ url_for('recenter') }}">Re-center</a>
+      <a href="{{ url_for('hold_ball') }}">Hold Ball</a>
+      <a href="{{ url_for('horizontal_hold') }}">Horizontal</a>
+      <a href="{{ url_for('vertical_hold') }}">Vertical</a>
+      <a href="{{ url_for('reaction_time_test') }}">Reaction</a>
+      <a href="{{ url_for('scoreboard') }}">Scoreboard</a>
+    </nav>
+  </div>
+</header>
+<script src="{{ url_for('static', filename='js/nav.js') }}" defer></script>

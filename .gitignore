@@ -1,1 +1,20 @@
 *-checkpoint.ipynb
+
+# Local secrets and environment
+.env
+.env.*
+!.env.example
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Tool and editor state
+.uv-cache/
+.idea/
+.vscode/

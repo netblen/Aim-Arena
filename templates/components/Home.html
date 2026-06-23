@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <style>
-    .home-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .home-image {
-      width: 100%;
-      height: 66%;
-      object-fit: contain;
-      filter: brightness(0.9) sepia(1) hue-rotate(300deg) saturate(5);
-    }
-  </style>
+  <title>Community - Aim Arena</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 </head>
 <body>
-  <div class="home-container">
-    <img
-      src=""
-      alt="Wallpaper"
-      class="home-image"
-    >
-  </div>
+  {% include 'components/_nav.html' %}
+
+  <main class="site-shell main-content">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Community lobby</p>
+        <h1>Pick a mode and set the pace.</h1>
+        <p>
+          This project now works like a compact gaming community hub: quick modes,
+          clear navigation, and a consistent look across every challenge.
+        </p>
+        <div class="hero-actions">
+          <a href="{{ url_for('index') }}#games" class="game-link">View Modes</a>
+          <a href="{{ url_for('reaction_time_test') }}" class="game-link secondary-link">Reflex Test</a>
+        </div>
+      </div>
+
+      <aside class="community-panel">
+        <p class="eyebrow">Lobby notes</p>
+        <h2>Short rounds make it easy to compete.</h2>
+        <p class="page-intro">
+          Challenge friends one mode at a time, rotate between mechanics, and keep
+          practicing until the score feels clean.
+        </p>
+      </aside>
+    </section>
+  </main>
 </body>
 </html>

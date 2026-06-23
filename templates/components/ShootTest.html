@@ -3,51 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shoot Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f4f4f4;
-    }
-    .game-container {
-      margin: 20px auto;
-      width: 500px;
-      height: 300px;
-      background-color: #333;
-      border-radius: 10px;
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
-    .target {
-      width: 20px;
-      height: 20px;
-      background-color: red;
-      border-radius: 50%;
-      position: absolute;
-      cursor: pointer;
-      transition: left 0.5s ease, top 0.5s ease; 
-    }
-    .button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  <title>Shoot Test - Aim Arena</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 </head>
 <body>
-  <h1>Shoot Test</h1>
-  <div id="game-container" class="game-container"></div>
-  <div id="info"></div>
-  <button id="start-button" class="button">Start</button>
+  {% include 'components/_nav.html' %}
+
+  <main class="game-page">
+    <section class="game-header">
+      <p class="eyebrow">Aim challenge</p>
+      <h1>Shoot Test</h1>
+      <p>Hit the target as many times as possible in 10 seconds.</p>
+    </section>
+
+    <section class="game-stage">
+      <div id="game-container" class="game-container"></div>
+      <div class="score-panel">
+        <div id="info">Ready to queue?</div>
+        <button id="start-button" class="button">Start</button>
+      </div>
+    </section>
+
+    {% set record_game = 'shootTest' %}
+    {% include 'components/_record_panel.html' %}
+  </main>
 
   <script>
     let time = -1;
@@ -75,7 +54,8 @@
       clicks = 0;
       time = 10;
       startButton.style.display = "none";
-      info.innerHTML = "";
+      info.innerHTML = "Time remaining: 10s";
+      clearInterval(timerInterval);
 
       const target = document.createElement("div");
       target.classList.add("target");
@@ -102,19 +82,23 @@
     function endGame() {
       clearInterval(timerInterval);
       gameContainer.innerHTML = "";
-      startButton.style.display = "block";
-      info.innerHTML = `Shoots: ${clicks}`;
+      startButton.style.display = "inline-flex";
+      info.innerHTML = `Shots landed: ${clicks}`;
 
       fetch("/add_score", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ game: "shootTest", score: clicks }),
       }).then((response) => response.json())
-        .then((data) => console.log("Score saved:", data))
+        .then((data) => {
+          console.log("Score saved:", data);
+          window.refreshBestRecords?.();
+        })
         .catch((error) => console.error("Error saving score:", error));
     }
 
     startButton.onclick = startGame;
   </script>
+  <script src="{{ url_for('static', filename='js/records.js') }}"></script>
 </body>
 </html>
