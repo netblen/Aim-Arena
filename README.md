@@ -1,8 +1,5 @@
 # Aim Arena
 
-## Student Name
-Anabella Miranda
-
 ## Project Title
 Shooter Practice Game
 
